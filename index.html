@@ -995,19 +995,21 @@
       setTimeout(() => div.remove(), 3000);
     }
 
-    function scrollToExportButton() {
-      if (window.innerWidth <= 1024) {
+    function scrollToElement(element, block = 'start') {
+      if (window.innerWidth <= 1024 && element) {
+        // Dismiss keyboard first
+        if (document.activeElement) {
+          document.activeElement.blur();
+        }
+        
+        // Wait a bit for keyboard to dismiss and viewport to resize
         setTimeout(() => {
-          // Use a more reliable scroll method for the export button
-          const element = exportButtonContainer;
-          const elementRect = element.getBoundingClientRect();
-          const absoluteElementTop = elementRect.top + window.pageYOffset;
-          const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2);
-          window.scrollTo({
-            top: middle,
-            behavior: 'smooth'
+          element.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: block,
+            inline: 'nearest'
           });
-        }, 500);
+        }, 300);
       }
     }
 
@@ -1026,25 +1028,7 @@
       // Auto-scroll to show the entire live draw display on mobile
       if (window.innerWidth <= 1024) {
         displayCard.classList.add('show-on-mobile');
-        
-        // First, blur any active input to dismiss the keyboard
-        document.activeElement.blur();
-        
-        setTimeout(() => {
-          // Use a more reliable scroll method that works even with keyboard
-          const element = displayCard;
-          const elementRect = element.getBoundingClientRect();
-          const absoluteElementTop = elementRect.top + window.pageYOffset;
-          const absoluteElementBottom = elementRect.bottom + window.pageYOffset;
-          
-          // Scroll to show the entire element, accounting for potential keyboard
-          const targetScroll = absoluteElementBottom - window.innerHeight + 100;
-          
-          window.scrollTo({
-            top: targetScroll,
-            behavior: 'smooth'
-          });
-        }, 300); // Longer delay to ensure keyboard is dismissed
+        scrollToElement(displayCard, 'end');
       }
 
       createWheelSegments(currentPool);
@@ -1134,7 +1118,11 @@
             if (winners.length > 0) celebrateWinner();
             
             // Auto-scroll to show the export button after winners are revealed
-            scrollToExportButton();
+            setTimeout(() => {
+              if (window.innerWidth <= 1024) {
+                scrollToElement(exportButtonContainer, 'center');
+              }
+            }, 1000);
           }
         }, stepTime);
         
