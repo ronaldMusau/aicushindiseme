@@ -1007,11 +1007,12 @@
         return; 
       }
 
-      // Auto-scroll to show the live draw display on mobile
+      // Auto-scroll to show the entire live draw display on mobile
       if (window.innerWidth <= 1024) {
         displayCard.classList.add('show-on-mobile');
         setTimeout(() => {
-          displayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Scroll all the way down to show the entire live display section
+          displayCard.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }, 100);
       }
 
