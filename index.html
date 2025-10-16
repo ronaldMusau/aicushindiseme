@@ -995,6 +995,17 @@
       setTimeout(() => div.remove(), 3000);
     }
 
+    function scrollToExportButton() {
+      if (window.innerWidth <= 1024) {
+        setTimeout(() => {
+          exportButtonContainer.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+        }, 500);
+      }
+    }
+
     async function startSpin() {
       if (participantsList.length === 0) { 
         showMessage('⚠️ Add participants first!'); 
@@ -1011,8 +1022,7 @@
       if (window.innerWidth <= 1024) {
         displayCard.classList.add('show-on-mobile');
         setTimeout(() => {
-          // Scroll all the way down to show the entire live display section
-          displayCard.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          displayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
       }
 
@@ -1101,6 +1111,9 @@
             showWinners(winners, 'raffle');
             
             if (winners.length > 0) celebrateWinner();
+            
+            // Auto-scroll to show the export button after winners are revealed
+            scrollToExportButton();
           }
         }, stepTime);
         
