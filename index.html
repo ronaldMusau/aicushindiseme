@@ -1022,7 +1022,11 @@
       if (window.innerWidth <= 1024) {
         displayCard.classList.add('show-on-mobile');
         setTimeout(() => {
-          displayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Scroll to the bottom of the display card to show everything
+          displayCard.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'end' 
+          });
         }, 100);
       }
 
