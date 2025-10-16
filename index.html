@@ -998,9 +998,14 @@
     function scrollToExportButton() {
       if (window.innerWidth <= 1024) {
         setTimeout(() => {
-          exportButtonContainer.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center' 
+          // Use a more reliable scroll method for the export button
+          const element = exportButtonContainer;
+          const elementRect = element.getBoundingClientRect();
+          const absoluteElementTop = elementRect.top + window.pageYOffset;
+          const middle = absoluteElementTop - (window.innerHeight / 2) + (elementRect.height / 2);
+          window.scrollTo({
+            top: middle,
+            behavior: 'smooth'
           });
         }, 500);
       }
@@ -1021,13 +1026,25 @@
       // Auto-scroll to show the entire live draw display on mobile
       if (window.innerWidth <= 1024) {
         displayCard.classList.add('show-on-mobile');
+        
+        // First, blur any active input to dismiss the keyboard
+        document.activeElement.blur();
+        
         setTimeout(() => {
-          // Scroll to the bottom of the display card to show everything
-          displayCard.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'end' 
+          // Use a more reliable scroll method that works even with keyboard
+          const element = displayCard;
+          const elementRect = element.getBoundingClientRect();
+          const absoluteElementTop = elementRect.top + window.pageYOffset;
+          const absoluteElementBottom = elementRect.bottom + window.pageYOffset;
+          
+          // Scroll to show the entire element, accounting for potential keyboard
+          const targetScroll = absoluteElementBottom - window.innerHeight + 100;
+          
+          window.scrollTo({
+            top: targetScroll,
+            behavior: 'smooth'
           });
-        }, 100);
+        }, 300); // Longer delay to ensure keyboard is dismissed
       }
 
       createWheelSegments(currentPool);
