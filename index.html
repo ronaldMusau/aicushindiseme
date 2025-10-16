@@ -780,7 +780,7 @@
           </div>
           <div class="form-group">
             <label>Number of Winners</label>
-            <input id="count" type="number" min="1" value="3" />
+            <input id="count" type="number" min="1" value="1" />
           </div>
         </div>
 
@@ -995,6 +995,24 @@
       setTimeout(() => div.remove(), 3000);
     }
 
+    function scrollToElement(element, block = 'start') {
+      if (window.innerWidth <= 1024 && element) {
+        // Dismiss keyboard first
+        if (document.activeElement) {
+          document.activeElement.blur();
+        }
+        
+        // Wait a bit for keyboard to dismiss and viewport to resize
+        setTimeout(() => {
+          element.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: block,
+            inline: 'nearest'
+          });
+        }, 300);
+      }
+    }
+
     async function startSpin() {
       if (participantsList.length === 0) { 
         showMessage('⚠️ Add participants first!'); 
@@ -1007,11 +1025,10 @@
         return; 
       }
 
+      // Auto-scroll to show the entire live draw display on mobile
       if (window.innerWidth <= 1024) {
         displayCard.classList.add('show-on-mobile');
-        setTimeout(() => {
-          displayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+        scrollToElement(displayCard, 'end');
       }
 
       createWheelSegments(currentPool);
@@ -1099,6 +1116,13 @@
             showWinners(winners, 'raffle');
             
             if (winners.length > 0) celebrateWinner();
+            
+            // Auto-scroll to show the export button after winners are revealed
+            setTimeout(() => {
+              if (window.innerWidth <= 1024) {
+                scrollToElement(exportButtonContainer, 'center');
+              }
+            }, 1000);
           }
         }, stepTime);
         
