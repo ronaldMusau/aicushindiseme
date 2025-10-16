@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIC Ushindi Seme </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #8B0000;
+      --primary-dark: #6b0000;
+      --primary-light: #a61e1e;
+      --accent: #FFD700;
+      --accent-glow: #FFA500;
+      --success: #10b981;
+      --dark: #0f172a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Sora', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 50%, #16213e 100%);
+      color: #1f2937;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(139, 0, 0, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+      animation: gradientShift 15s ease infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+      animation: slideDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 900;
+      color: white;
+      box-shadow: 0 20px 50px rgba(139, 0, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.2);
+      position: relative;
+      animation: logoFloat 4s ease-in-out infinite;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(2deg); }
+    }
+
+    .logo::after {
+      content: '✨';
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      font-size: 28px;
+      animation: rotate 3s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .header-text h1 {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, #fff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .header-text p {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      flex: 1;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 40px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      animation: cardAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+    }
+
+    @keyframes cardAppear {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card:nth-child(1) { animation-delay: 0.2s; }
+    .card:nth-child(2) { animation-delay: 0.3s; }
+
+    .card:hover {
+      border-color: rgba(255, 215, 0, 0.3);
+      background: rgba(255, 255, 255, 0.11);
+      transform: translateY(-8px);
+      box-shadow: 0 35px 70px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 40px rgba(255, 215, 0, 0.1);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 10px 25px rgba(139, 0, 0, 0.3);
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    textarea, input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      font-family: 'Sora', system-ui, sans-serif;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      margin-bottom: 16px;
+      backdrop-filter: blur(10px);
+    }
+
+    textarea::placeholder, input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    textarea:focus, input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group { margin-bottom: 20px; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .info-text {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .info-text code {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    button {
+      padding: 16px 24px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      font-family: 'Sora', system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-transform: uppercase;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      box-shadow: 0 12px 30px rgba(139, 0, 0, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(139, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.1);
+    }
+
+    button:active { transform: translateY(-2px); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .stage {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border: 2px solid rgba(255, 215, 0, 0.2);
+      border-radius: 24px;
+      padding: 60px 40px;
+      text-align: center;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.5s ease;
+    }
+
+    .stage.celebrating {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+      box-shadow: 0 0 60px rgba(255, 215, 0, 0.3), 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    /* SPINNING WHEEL */
+    .wheel-container {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #FFD700 0deg 40deg,
+        var(--primary) 40deg 80deg,
+        #FFA500 80deg 120deg,
+        var(--primary) 120deg 160deg,
+        #FF6B6B 160deg 200deg,
+        var(--primary) 200deg 240deg,
+        #4ECDC4 240deg 280deg,
+        var(--primary) 280deg 320deg,
+        #95E1D3 320deg 360deg
+      );
+      box-shadow: 
+        0 20px 60px rgba(139, 0, 0, 0.5),
+        0 0 40px rgba(255, 215, 0, 0.4),
+        inset 0 0 30px rgba(0, 0, 0, 0.2);
+      border: 5px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      animation: wheelIdle 20s linear infinite;
+    }
+
+    @keyframes wheelIdle {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .wheel.spinning {
+      animation: wheelSpin 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    }
+
+    @keyframes wheelSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .wheel::before {
+      content: '';
+      position: absolute;
+      width: 80%;
+      height: 80%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+      inset: 10%;
+    }
+
+    .wheel-center {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), var(--primary));
+      border: 4px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 900;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      z-index: 2;
+    }
+
+    .wheel-pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-top: 30px solid var(--accent);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      z-index: 3;
+      animation: pointerGlow 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pointerGlow {
+      0%, 100% { filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3)); }
+      50% { filter: drop-shadow(0 6px 20px rgba(255, 215, 0, 0.6)); }
+    }
+
+    .name-display {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 900;
+      color: var(--accent);
+      min-height: 56px;
+      margin: 20px 0;
+      letter-spacing: -1px;
+      animation: nameReveal 0.5s ease;
+    }
+
+    @keyframes nameReveal {
+      0% { opacity: 0; transform: scale(0.8) translateY(-20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .stage-subtitle {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+
+    .results-container {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 24px;
+      margin-top: 24px;
+      max-height: 300px;
+      overflow-y: auto;
+      backdrop-filter: blur(15px);
+    }
+
+    .results-container::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .results-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .results-container::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      animation: resultSlide 0.5s ease backwards;
+    }
+
+    @keyframes resultSlide {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .result-item:nth-child(1) { animation-delay: 0.1s; border-left-color: #FFD700; }
+    .result-item:nth-child(2) { animation-delay: 0.2s; border-left-color: #C0C0C0; }
+    .result-item:nth-child(3) { animation-delay: 0.3s; border-left-color: #CD7F32; }
+
+    .result-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(4px);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.15);
+    }
+
+    .result-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .result-medal { font-size: 24px; min-width: 32px; }
+
+    .result-text h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .result-text p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 500;
+    }
+
+    .result-rank {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--accent);
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .confetti {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      animation: confettiFall 3s ease-out forwards;
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    @keyframes confettiFall {
+      0% { opacity: 1; transform: translateY(0) translateX(0) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(100vh) translateX(100px) rotate(720deg); }
+    }
+
+    .status-msg {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 16px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 15px 40px rgba(139, 0, 0, 0.4);
+      animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2001;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid { grid-template-columns: 1fr; gap: 24px; }
+      .form-row { grid-template-columns: 1fr; }
+      .container { padding: 30px 16px; }
+      .card { padding: 32px; }
+      .stage { min-height: 450px; }
+    }
+
+    @media (max-width: 640px) {
+      .logo-wrapper { flex-direction: column; gap: 12px; }
+      .header-text h1 { font-size: 28px; }
+      .button-group { grid-template-columns: 1fr; }
+      .wheel-container { width: 180px; height: 180px; }
+      .wheel-center { width: 50px; height: 50px; font-size: 24px; }
+      .stage { padding: 40px 24px; min-height: 350px; }
+    }
+
+    .countdown {
+      font-size: 18px;
+      color: var(--accent);
+      font-weight: 700;
+      margin: 10px 0;
+      min-height: 25px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-wrapper">
+        <div class="logo">AIC</div>
+        <div class="header-text">
+          <h1>🏆 Ushindi Seme Prize Draw</h1>
+          <p>HONEST • TRANSPARENT • RAFFLE</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <!-- Left Card: Controls -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-icon">⚙️</div>
+          Setup & Controls
+        </div>
+
+        <div class="form-group">
+          <label>👥 Participants List</label>
+          <textarea id="participants" placeholder="e.g, Brian "></textarea>
+          <div class="info-text">💡 Format: <code>Name</code> or <code>Name:count</code> for multiple tickets</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mode</label>
+            <select id="mode">
+              <option value="raffle">🎟️ Raffle Draw</option>
+              <option value="score">🏆 Score Assignment</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Number of Winners</label>
+            <input id="count" type="number" min="1" value="3" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Draw Duration (seconds)</label>
+          <input id="drawDuration" type="number" min="2" max="10" value="5" />
+          <div class="info-text">How long the draw animation will run before revealing winners</div>
+        </div>
+
+        <div class="button-group" style="grid-template-columns: 1fr;">
+          <button id="startBtn" class="btn-primary" style="grid-column: 1/-1;">🎲 START DRAW</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+          <button id="clearBtn" class="btn-secondary">🗑️ Clear</button>
+          <button id="exportBtn" class="btn-secondary">📊 Export CSV</button>
+        </div>
+      </div>
+
+      <!-- Right Card: Display with Spinning Wheel -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-icon">🎯</div>
+          Live Draw Display
+        </div>
+
+        <div class="stage" id="stage">
+          <div class="wheel-container">
+            <div class="wheel-pointer"></div>
+            <div class="wheel" id="wheel">
+              <div class="wheel-center" id="wheelCenter">🎁</div>
+            </div>
+          </div>
+          <div class="countdown" id="countdown"></div>
+          <div class="name-display" id="flash">Ready to Draw!</div>
+          <div class="stage-subtitle" id="sub">Click "START DRAW" to begin</div>
+        </div>
+
+        <div class="results-container" id="results"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Utility functions
+    function rngInt(max) {
+      const a = new Uint32Array(1);
+      window.crypto.getRandomValues(a);
+      return a[0] % max;
+    }
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = rngInt(i + 1);
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function parseParticipants(text) {
+      const list = [];
+      let ticketId = 1;
+      for (const line of text.split('\n').map(l => l.trim()).filter(Boolean)) {
+        let name = line, weight = 1;
+        if (line.includes(':')) {
+          [name, weight] = line.split(':');
+          weight = Math.max(1, parseInt(weight) || 1);
+          name = name.trim();
+        }
+        for (let i = 0; i < weight; i++) {
+          list.push({ name, ticket: `${ticketId++}` });
+        }
+      }
+      return list;
+    }
+
+    // DOM elements
+    const participantsEl = document.getElementById('participants');
+    const modeEl = document.getElementById('mode');
+    const countEl = document.getElementById('count');
+    const drawDurationEl = document.getElementById('drawDuration');
+    const startBtn = document.getElementById('startBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const flashEl = document.getElementById('flash');
+    const subEl = document.getElementById('sub');
+    const countdownEl = document.getElementById('countdown');
+    const wheel = document.getElementById('wheel');
+    const wheelCenter = document.getElementById('wheelCenter');
+    const resultsEl = document.getElementById('results');
+    const stage = document.getElementById('stage');
+
+    // State variables
+    let spinInterval = null;
+    let currentPool = [];
+    let lastWinners = [];
+
+    // Message display function
+    function showMessage(msg) {
+      const existing = document.querySelector('.status-msg');
+      if (existing) existing.remove();
+      const div = document.createElement('div');
+      div.className = 'status-msg';
+      div.innerHTML = `<span>✨</span> ${msg}`;
+      document.body.appendChild(div);
+      setTimeout(() => div.remove(), 3000);
+    }
+
+    // Start spin function with auto-reveal
+    async function startSpin() {
+      const text = participantsEl.value.trim();
+      if (!text) { showMessage('⚠️ Enter participants first!'); return; }
+      
+      currentPool = parseParticipants(text);
+      if (currentPool.length === 0) { showMessage('⚠️ No valid entries!'); return; }
+
+      lastWinners = [];
+      startBtn.disabled = true;
+      wheel.classList.add('spinning');
+      stage.classList.remove('celebrating');
+      
+      const drawDuration = parseInt(drawDurationEl.value) * 1000; // Convert to milliseconds
+      let timeLeft = drawDuration / 1000;
+      
+      // Start countdown
+      const countdownInterval = setInterval(() => {
+        countdownEl.textContent = `Revealing in ${timeLeft} seconds...`;
+        timeLeft--;
+        
+        if (timeLeft < 0) {
+          clearInterval(countdownInterval);
+          countdownEl.textContent = '';
+        }
+      }, 1000);
+
+      let rotation = 0;
+      spinInterval = setInterval(() => {
+        const idx = rngInt(currentPool.length);
+        flashEl.style.animation = 'none';
+        setTimeout(() => { flashEl.style.animation = 'nameReveal 0.5s ease'; }, 10);
+        flashEl.textContent = currentPool[idx].name;
+        wheelCenter.textContent = currentPool[idx].ticket;
+        
+        rotation += 30;
+        wheel.style.animation = 'none';
+        wheel.style.transform = `rotate(${rotation}deg)`;
+      }, 100);
+
+      // Auto-stop after specified duration
+      setTimeout(() => {
+        if (spinInterval) {
+          clearInterval(spinInterval);
+          spinInterval = null;
+        }
+        clearInterval(countdownInterval);
+        countdownEl.textContent = '';
+        
+        wheel.classList.remove('spinning');
+        startBtn.disabled = false;
+
+        const desired = Math.max(1, parseInt(countEl.value) || 1);
+        const winners = drawRaffleWinners(desired);
+        showWinners(winners, 'raffle');
+        
+        if (winners.length > 0) celebrateWinner();
+      }, drawDuration);
+    }
+
+    // Draw raffle winners
+    function drawRaffleWinners(n) {
+      const poolCopy = currentPool.slice();
+      shuffleArray(poolCopy);
+      const winners = [];
+      const seen = new Set();
+      
+      for (let i = 0; i < poolCopy.length && winners.length < n; i++) {
+        const candidate = poolCopy[i];
+        if (!seen.has(candidate.name)) {
+          winners.push(candidate);
+          seen.add(candidate.name);
+        }
+      }
+      
+      if (winners.length < n) {
+        const remaining = poolCopy.filter(p => !winners.includes(p));
+        for (let i = 0; i < remaining.length && winners.length < n; i++) {
+          winners.push(remaining[i]);
+        }
+      }
+      
+      return winners;
+    }
+
+    // Show winners
+    function showWinners(items, mode) {
+      resultsEl.innerHTML = '';
+      lastWinners = items;
+      
+      items.forEach((it, idx) => {
+        const div = document.createElement('div');
+        div.className = 'result-item';
+        
+        if (mode === 'raffle') {
+          const medals = ['🥇', '🥈', '🥉', '🎁'];
+          const medal = medals[idx] || '🎁';
+          div.innerHTML = `
+            <div class="result-info">
+              <div class="result-medal">${medal}</div>
+              <div class="result-text">
+                <h4>${it.name}</h4>
+                <p>Ticket #${it.ticket}</p>
+              </div>
+            </div>
+            <div class="result-rank">#${idx + 1}</div>
+          `;
+        } else {
+          const medals = ['🥇', '🥈', '🥉', '🎯'];
+          const medal = medals[idx] || '🎯';
+          div.innerHTML = `
+            <div class="result-info">
+              <div class="result-medal">${medal}</div>
+              <div class="result-text">
+                <h4>${it.name}</h4>
+                <p>Score: ${it.score}</p>
+              </div>
+            </div>
+            <div class="result-rank">#${idx + 1}</div>
+          `;
+        }
+        
+        resultsEl.appendChild(div);
+      });
+
+      if (items.length > 0) {
+        const firstItem = items[0];
+        flashEl.textContent = firstItem.name;
+        wheelCenter.textContent = mode === 'raffle' ? firstItem.ticket : firstItem.score;
+        subEl.textContent = mode === 'raffle'
+          ? `🎉 ${firstItem.name} WINS! (${items.length} winner${items.length > 1 ? 's' : ''})`
+          : `🎯 ${firstItem.name} assigned ${firstItem.score}`;
+      }
+    }
+
+    // Celebration effects
+    function celebrateWinner() {
+      stage.classList.add('celebrating');
+      
+      for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + '%';
+          confetti.style.background = ['#FFD700', '#FFA500', '#FF6B6B', '#4ECDC4', '#95E1D3'][Math.floor(Math.random() * 5)];
+          confetti.style.animationDelay = Math.random() * 0.5 + 's';
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 3000);
+        }, i * 20);
+      }
+
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.value = 800;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.5);
+      } catch (e) {}
+    }
+
+    // Clear results
+    function clearResults() {
+      participantsEl.value = '';
+      resultsEl.innerHTML = '';
+      flashEl.textContent = 'Ready to Draw!';
+      wheelCenter.textContent = '🎁';
+      subEl.textContent = 'Click "START DRAW" to begin';
+      countdownEl.textContent = '';
+      lastWinners = [];
+      if (spinInterval) { clearInterval(spinInterval); spinInterval = null; }
+      startBtn.disabled = false;
+      wheel.classList.remove('spinning');
+      stage.classList.remove('celebrating');
+    }
+
+    // Export CSV
+    function exportCSV() {
+      if (lastWinners.length === 0) { showMessage('Nothing to export!'); return; }
+      const mode = modeEl.value;
+      const header = mode === 'raffle' ? 'Rank,Name,Ticket\n' : 'Rank,Name,Score\n';
+      const csv = lastWinners.map((w, i) => {
+        const value = mode === 'raffle' ? w.ticket : w.score;
+        return `${i + 1},"${w.name.replace(/"/g, '""')}",${value}`;
+      }).join('\n');
+      
+      const blob = new Blob([header + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'AIC_Ushindi_Seme_Results.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showMessage('✅ CSV exported successfully!');
+    }
+
+    // Event listeners
+    startBtn.addEventListener('click', startSpin);
+    clearBtn.addEventListener('click', clearResults);
+    exportBtn.addEventListener('click', exportCSV);
+  </script>
+</body>
+</html>
