@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIC Ushindi Seme </title>
+  <title>AIC Ushindi Seme</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     :root {
       --primary: #8B0000;
@@ -207,7 +208,124 @@
       text-transform: uppercase;
     }
 
-    textarea, input[type="text"], input[type="number"], select {
+    .participant-input-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .participant-input {
+      width: 100%;
+      padding: 14px 80px 14px 18px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      font-family: 'Sora', system-ui, sans-serif;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .participant-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .participant-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-participant-btn {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 8px 16px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+
+    .add-participant-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 4px 12px rgba(139, 0, 0, 0.4);
+    }
+
+    .participants-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 40px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      border: 1.5px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .participants-tags::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .participants-tags::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .participants-tags::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 10px;
+    }
+
+    .participant-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, rgba(139, 0, 0, 0.4), rgba(139, 0, 0, 0.2));
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 8px;
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      animation: tagAppear 0.3s ease;
+    }
+
+    @keyframes tagAppear {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .participant-tag .remove-tag {
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .participant-tag .remove-tag:hover {
+      opacity: 1;
+    }
+
+    .participant-tag .ticket-count {
+      background: rgba(255, 215, 0, 0.2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    input[type="number"], select {
       width: 100%;
       padding: 14px 18px;
       border-radius: 12px;
@@ -221,11 +339,7 @@
       backdrop-filter: blur(10px);
     }
 
-    textarea::placeholder, input::placeholder {
-      color: rgba(255, 255, 255, 0.4);
-    }
-
-    textarea:focus, input:focus, select:focus {
+    input:focus, select:focus {
       outline: none;
       border-color: var(--accent);
       background: rgba(255, 255, 255, 0.08);
@@ -328,11 +442,10 @@
       box-shadow: 0 0 60px rgba(255, 215, 0, 0.3), 0 20px 50px rgba(0, 0, 0, 0.4);
     }
 
-    /* SPINNING WHEEL */
     .wheel-container {
       position: relative;
-      width: 240px;
-      height: 240px;
+      width: 320px;
+      height: 320px;
       margin: 0 auto 24px;
       display: flex;
       align-items: center;
@@ -343,65 +456,80 @@
       width: 100%;
       height: 100%;
       border-radius: 50%;
-      background: conic-gradient(
-        from 0deg,
-        #FFD700 0deg 40deg,
-        var(--primary) 40deg 80deg,
-        #FFA500 80deg 120deg,
-        var(--primary) 120deg 160deg,
-        #FF6B6B 160deg 200deg,
-        var(--primary) 200deg 240deg,
-        #4ECDC4 240deg 280deg,
-        var(--primary) 280deg 320deg,
-        #95E1D3 320deg 360deg
-      );
       box-shadow: 
         0 20px 60px rgba(139, 0, 0, 0.5),
         0 0 40px rgba(255, 215, 0, 0.4),
         inset 0 0 30px rgba(0, 0, 0, 0.2);
       border: 5px solid rgba(255, 255, 255, 0.15);
       position: relative;
-      animation: wheelIdle 20s linear infinite;
+      transition: transform 0.1s linear;
+      overflow: hidden;
     }
 
-    @keyframes wheelIdle {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .wheel-segment {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+    }
+
+    .wheel-segment canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+    }
+
+    .wheel-segment-text {
+      position: absolute;
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+      white-space: nowrap;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transform-origin: center;
+      left: 50%;
+      top: 50%;
+      pointer-events: none;
     }
 
     .wheel.spinning {
-      animation: wheelSpin 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-    }
-
-    @keyframes wheelSpin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .wheel::before {
-      content: '';
-      position: absolute;
-      width: 80%;
-      height: 80%;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
-      inset: 10%;
+      animation: none;
     }
 
     .wheel-center {
       position: absolute;
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), var(--primary));
-      border: 4px solid white;
+      background: radial-gradient(circle at 30% 30%, #4a4a4a, #2a2a2a);
+      border: 4px solid rgba(255, 255, 255, 0.3);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      font-weight: 900;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      z-index: 2;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .wheel-center-star {
+      width: 60%;
+      height: 60%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-glow));
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      animation: starPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes starPulse {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.1) rotate(180deg); }
     }
 
     .wheel-pointer {
@@ -415,7 +543,7 @@
       border-right: 15px solid transparent;
       border-top: 30px solid var(--accent);
       filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-      z-index: 3;
+      z-index: 20;
       animation: pointerGlow 1.5s ease-in-out infinite;
     }
 
@@ -500,6 +628,11 @@
       box-shadow: 0 8px 20px rgba(255, 215, 0, 0.15);
     }
 
+    .result-item.winner {
+      background: rgba(255, 215, 0, 0.1);
+      border-left-width: 6px;
+    }
+
     .result-info {
       display: flex;
       align-items: center;
@@ -568,29 +701,43 @@
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
 
-    @media (max-width: 1024px) {
-      .main-grid { grid-template-columns: 1fr; gap: 24px; }
-      .form-row { grid-template-columns: 1fr; }
-      .container { padding: 30px 16px; }
-      .card { padding: 32px; }
-      .stage { min-height: 450px; }
-    }
-
-    @media (max-width: 640px) {
-      .logo-wrapper { flex-direction: column; gap: 12px; }
-      .header-text h1 { font-size: 28px; }
-      .button-group { grid-template-columns: 1fr; }
-      .wheel-container { width: 180px; height: 180px; }
-      .wheel-center { width: 50px; height: 50px; font-size: 24px; }
-      .stage { padding: 40px 24px; min-height: 350px; }
-    }
-
     .countdown {
       font-size: 18px;
       color: var(--accent);
       font-weight: 700;
       margin: 10px 0;
       min-height: 25px;
+    }
+
+    @media (max-width: 1024px) {
+      .main-grid { grid-template-columns: 1fr; gap: 24px; }
+      .form-row { grid-template-columns: 1fr; }
+      .container { padding: 30px 16px; }
+      .card { padding: 32px; }
+      .stage { min-height: 450px; }
+      
+      .card:nth-child(2) {
+        display: none;
+      }
+      
+      .card:nth-child(2).show-on-mobile {
+        display: block;
+        animation: slideInMobile 0.5s ease;
+      }
+    }
+
+    @keyframes slideInMobile {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .logo-wrapper { flex-direction: column; gap: 12px; }
+      .header-text h1 { font-size: 28px; }
+      .button-group { grid-template-columns: 1fr; }
+      .wheel-container { width: 260px; height: 260px; }
+      .wheel-center { width: 60px; height: 60px; }
+      .stage { padding: 40px 24px; min-height: 350px; }
     }
   </style>
 </head>
@@ -607,7 +754,6 @@
     </header>
 
     <div class="main-grid">
-      <!-- Left Card: Controls -->
       <div class="card">
         <div class="card-title">
           <div class="card-icon">⚙️</div>
@@ -615,9 +761,13 @@
         </div>
 
         <div class="form-group">
-          <label>👥 Participants List</label>
-          <textarea id="participants" placeholder="e.g, Brian "></textarea>
-          <div class="info-text">💡 Format: <code>Name</code> or <code>Name:count</code> for multiple tickets</div>
+          <label>👥 Add Participants</label>
+          <div class="participant-input-wrapper">
+            <input type="text" id="participantInput" class="participant-input" placeholder="Enter name or Name:count">
+            <button class="add-participant-btn" id="addParticipantBtn">+ Add</button>
+          </div>
+          <div class="participants-tags" id="participantsTags"></div>
+          <div class="info-text">💡 Format: <code>Name</code> or <code>Name:count</code> for multiple tickets. Press Enter or click Add.</div>
         </div>
 
         <div class="form-row">
@@ -644,14 +794,12 @@
           <button id="startBtn" class="btn-primary" style="grid-column: 1/-1;">🎲 START DRAW</button>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+        <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 16px;">
           <button id="clearBtn" class="btn-secondary">🗑️ Clear</button>
-          <button id="exportBtn" class="btn-secondary">📊 Export CSV</button>
         </div>
       </div>
 
-      <!-- Right Card: Display with Spinning Wheel -->
-      <div class="card">
+      <div class="card" id="displayCard">
         <div class="card-title">
           <div class="card-icon">🎯</div>
           Live Draw Display
@@ -661,7 +809,9 @@
           <div class="wheel-container">
             <div class="wheel-pointer"></div>
             <div class="wheel" id="wheel">
-              <div class="wheel-center" id="wheelCenter">🎁</div>
+              <div class="wheel-center">
+                <div class="wheel-center-star"></div>
+              </div>
             </div>
           </div>
           <div class="countdown" id="countdown"></div>
@@ -670,12 +820,14 @@
         </div>
 
         <div class="results-container" id="results"></div>
+        <div id="exportButtonContainer" style="display: none; margin-top: 16px;">
+          <button id="exportBtn" class="btn-primary" style="width: 100%;">📊 Export Results to Excel</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Utility functions
     function rngInt(max) {
       const a = new Uint32Array(1);
       window.crypto.getRandomValues(a);
@@ -690,25 +842,9 @@
       return arr;
     }
 
-    function parseParticipants(text) {
-      const list = [];
-      let ticketId = 1;
-      for (const line of text.split('\n').map(l => l.trim()).filter(Boolean)) {
-        let name = line, weight = 1;
-        if (line.includes(':')) {
-          [name, weight] = line.split(':');
-          weight = Math.max(1, parseInt(weight) || 1);
-          name = name.trim();
-        }
-        for (let i = 0; i < weight; i++) {
-          list.push({ name, ticket: `${ticketId++}` });
-        }
-      }
-      return list;
-    }
-
-    // DOM elements
-    const participantsEl = document.getElementById('participants');
+    const participantInput = document.getElementById('participantInput');
+    const addParticipantBtn = document.getElementById('addParticipantBtn');
+    const participantsTags = document.getElementById('participantsTags');
     const modeEl = document.getElementById('mode');
     const countEl = document.getElementById('count');
     const drawDurationEl = document.getElementById('drawDuration');
@@ -719,16 +855,136 @@
     const subEl = document.getElementById('sub');
     const countdownEl = document.getElementById('countdown');
     const wheel = document.getElementById('wheel');
-    const wheelCenter = document.getElementById('wheelCenter');
     const resultsEl = document.getElementById('results');
+    const exportButtonContainer = document.getElementById('exportButtonContainer');
     const stage = document.getElementById('stage');
+    const displayCard = document.getElementById('displayCard');
 
-    // State variables
     let spinInterval = null;
     let currentPool = [];
     let lastWinners = [];
+    let participantsList = [];
 
-    // Message display function
+    function addParticipant() {
+      const text = participantInput.value.trim();
+      if (!text) return;
+
+      let name = text, weight = 1;
+      if (text.includes(':')) {
+        [name, weight] = text.split(':');
+        weight = Math.max(1, parseInt(weight) || 1);
+        name = name.trim();
+      }
+
+      if (!name) return;
+
+      participantsList.push({ name, weight });
+      renderParticipantTags();
+      participantInput.value = '';
+    }
+
+    function removeParticipant(index) {
+      participantsList.splice(index, 1);
+      renderParticipantTags();
+    }
+
+    function renderParticipantTags() {
+      participantsTags.innerHTML = '';
+      participantsList.forEach((p, idx) => {
+        const tag = document.createElement('div');
+        tag.className = 'participant-tag';
+        tag.innerHTML = `
+          <span>${p.name}</span>
+          ${p.weight > 1 ? `<span class="ticket-count">x${p.weight}</span>` : ''}
+          <span class="remove-tag" onclick="removeParticipant(${idx})">×</span>
+        `;
+        participantsTags.appendChild(tag);
+      });
+    }
+
+    function parseParticipants() {
+      const list = [];
+      let ticketId = 1;
+      for (const p of participantsList) {
+        for (let i = 0; i < p.weight; i++) {
+          list.push({ name: p.name, ticket: `${ticketId++}` });
+        }
+      }
+      return list;
+    }
+
+    function createWheelSegments(participants) {
+      wheel.innerHTML = '';
+      
+      const centerEl = document.createElement('div');
+      centerEl.className = 'wheel-center';
+      centerEl.innerHTML = '<div class="wheel-center-star"></div>';
+      wheel.appendChild(centerEl);
+
+      if (participants.length === 0) return;
+
+      const uniqueNames = [...new Set(participants.map(p => p.name))];
+      const colors = ['#8B0000', '#FFD700', '#6b0000', '#FFA500', '#a61e1e', '#4ECDC4', '#FF6B6B', '#95E1D3'];
+      const anglePerSegment = 360 / uniqueNames.length;
+
+      uniqueNames.forEach((name, idx) => {
+        const segment = document.createElement('div');
+        segment.className = 'wheel-segment';
+        const color = colors[idx % colors.length];
+        segment.style.position = 'absolute';
+        segment.style.width = '100%';
+        segment.style.height = '100%';
+        segment.style.left = '0';
+        segment.style.top = '0';
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = 320;
+        canvas.height = 320;
+        canvas.style.position = 'absolute';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.left = '0';
+        canvas.style.top = '0';
+        
+        const ctx = canvas.getContext('2d');
+        const centerX = 160;
+        const centerY = 160;
+        const radius = 160;
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        const startAngle = (idx * anglePerSegment - 90) * Math.PI / 180;
+        const endAngle = ((idx + 1) * anglePerSegment - 90) * Math.PI / 180;
+        ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        segment.appendChild(canvas);
+        
+        const text = document.createElement('div');
+        text.className = 'wheel-segment-text';
+        text.textContent = name.length > 12 ? name.substring(0, 10) + '...' : name;
+        
+        const middleAngle = (startAngle + endAngle) / 2;
+        const textDistance = 100;
+        const textX = Math.cos(middleAngle) * textDistance;
+        const textY = Math.sin(middleAngle) * textDistance;
+        const textRotation = (middleAngle * 180 / Math.PI + 90);
+        
+        text.style.transform = `translate(-50%, -50%) translate(${textX}px, ${textY}px) rotate(${textRotation}deg)`;
+        
+        segment.appendChild(text);
+        wheel.appendChild(segment);
+      });
+
+      wheel.appendChild(centerEl);
+    }
+
     function showMessage(msg) {
       const existing = document.querySelector('.status-msg');
       if (existing) existing.remove();
@@ -739,23 +995,35 @@
       setTimeout(() => div.remove(), 3000);
     }
 
-    // Start spin function with auto-reveal
     async function startSpin() {
-      const text = participantsEl.value.trim();
-      if (!text) { showMessage('⚠️ Enter participants first!'); return; }
+      if (participantsList.length === 0) { 
+        showMessage('⚠️ Add participants first!'); 
+        return; 
+      }
       
-      currentPool = parseParticipants(text);
-      if (currentPool.length === 0) { showMessage('⚠️ No valid entries!'); return; }
+      currentPool = parseParticipants();
+      if (currentPool.length === 0) { 
+        showMessage('⚠️ No valid entries!'); 
+        return; 
+      }
 
+      if (window.innerWidth <= 1024) {
+        displayCard.classList.add('show-on-mobile');
+        setTimeout(() => {
+          displayCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+
+      createWheelSegments(currentPool);
       lastWinners = [];
       startBtn.disabled = true;
       wheel.classList.add('spinning');
       stage.classList.remove('celebrating');
+      exportButtonContainer.style.display = 'none';
       
-      const drawDuration = parseInt(drawDurationEl.value) * 1000; // Convert to milliseconds
+      const drawDuration = parseInt(drawDurationEl.value) * 1000;
       let timeLeft = drawDuration / 1000;
       
-      // Start countdown
       const countdownInterval = setInterval(() => {
         countdownEl.textContent = `Revealing in ${timeLeft} seconds...`;
         timeLeft--;
@@ -766,40 +1034,77 @@
         }
       }, 1000);
 
+      const desired = Math.max(1, parseInt(countEl.value) || 1);
+      const winners = drawRaffleWinners(desired);
+      const winnerName = winners[0].name;
+      
+      const uniqueNames = [...new Set(currentPool.map(p => p.name))];
+      const winnerIndex = uniqueNames.indexOf(winnerName);
+      const anglePerSegment = 360 / uniqueNames.length;
+      
+      const segmentCenterAngle = winnerIndex * anglePerSegment + anglePerSegment / 2;
+      const targetAngle = 360 - segmentCenterAngle;
+      
+      const fullRotations = 5 + Math.floor(Math.random() * 3);
+      const finalRotation = (fullRotations * 360) + targetAngle;
+
       let rotation = 0;
+      let currentSpeed = 40;
+      const normalPhase = drawDuration - 2000;
+      
       spinInterval = setInterval(() => {
         const idx = rngInt(currentPool.length);
         flashEl.style.animation = 'none';
         setTimeout(() => { flashEl.style.animation = 'nameReveal 0.5s ease'; }, 10);
         flashEl.textContent = currentPool[idx].name;
-        wheelCenter.textContent = currentPool[idx].ticket;
         
-        rotation += 30;
-        wheel.style.animation = 'none';
+        rotation += currentSpeed;
         wheel.style.transform = `rotate(${rotation}deg)`;
-      }, 100);
+      }, 50);
 
-      // Auto-stop after specified duration
       setTimeout(() => {
-        if (spinInterval) {
-          clearInterval(spinInterval);
-          spinInterval = null;
-        }
-        clearInterval(countdownInterval);
-        countdownEl.textContent = '';
+        clearInterval(spinInterval);
         
-        wheel.classList.remove('spinning');
-        startBtn.disabled = false;
+        const remainingTime = 2000;
+        const remainingDistance = finalRotation - rotation;
+        const steps = 20;
+        const stepTime = remainingTime / steps;
+        let currentStep = 0;
+        
+        const decelerationInterval = setInterval(() => {
+          currentStep++;
+          const progress = currentStep / steps;
+          const easeOut = 1 - Math.pow(1 - progress, 3);
+          rotation = (finalRotation - remainingDistance) + (remainingDistance * easeOut);
+          
+          wheel.style.transform = `rotate(${rotation}deg)`;
+          
+          if (currentStep % 2 === 0) {
+            const currentAngle = (rotation % 360 + 360) % 360;
+            const currentSegmentIndex = Math.floor((360 - currentAngle + anglePerSegment / 2) / anglePerSegment) % uniqueNames.length;
+            flashEl.textContent = uniqueNames[currentSegmentIndex];
+          }
+          
+          if (currentStep >= steps) {
+            clearInterval(decelerationInterval);
+            clearInterval(countdownInterval);
+            countdownEl.textContent = '';
+            
+            wheel.style.transform = `rotate(${finalRotation}deg)`;
+            flashEl.textContent = winnerName;
+            
+            wheel.classList.remove('spinning');
+            startBtn.disabled = false;
 
-        const desired = Math.max(1, parseInt(countEl.value) || 1);
-        const winners = drawRaffleWinners(desired);
-        showWinners(winners, 'raffle');
+            showWinners(winners, 'raffle');
+            
+            if (winners.length > 0) celebrateWinner();
+          }
+        }, stepTime);
         
-        if (winners.length > 0) celebrateWinner();
-      }, drawDuration);
+      }, normalPhase);
     }
 
-    // Draw raffle winners
     function drawRaffleWinners(n) {
       const poolCopy = currentPool.slice();
       shuffleArray(poolCopy);
@@ -824,42 +1129,26 @@
       return winners;
     }
 
-    // Show winners
     function showWinners(items, mode) {
       resultsEl.innerHTML = '';
       lastWinners = items;
       
       items.forEach((it, idx) => {
         const div = document.createElement('div');
-        div.className = 'result-item';
+        div.className = 'result-item winner';
         
-        if (mode === 'raffle') {
-          const medals = ['🥇', '🥈', '🥉', '🎁'];
-          const medal = medals[idx] || '🎁';
-          div.innerHTML = `
-            <div class="result-info">
-              <div class="result-medal">${medal}</div>
-              <div class="result-text">
-                <h4>${it.name}</h4>
-                <p>Ticket #${it.ticket}</p>
-              </div>
+        const medals = ['🥇', '🥈', '🥉', '🎁'];
+        const medal = medals[idx] || '🎁';
+        div.innerHTML = `
+          <div class="result-info">
+            <div class="result-medal">${medal}</div>
+            <div class="result-text">
+              <h4>${it.name}</h4>
+              <p>Ticket #${it.ticket}</p>
             </div>
-            <div class="result-rank">#${idx + 1}</div>
-          `;
-        } else {
-          const medals = ['🥇', '🥈', '🥉', '🎯'];
-          const medal = medals[idx] || '🎯';
-          div.innerHTML = `
-            <div class="result-info">
-              <div class="result-medal">${medal}</div>
-              <div class="result-text">
-                <h4>${it.name}</h4>
-                <p>Score: ${it.score}</p>
-              </div>
-            </div>
-            <div class="result-rank">#${idx + 1}</div>
-          `;
-        }
+          </div>
+          <div class="result-rank">#${idx + 1} WINNER</div>
+        `;
         
         resultsEl.appendChild(div);
       });
@@ -867,14 +1156,11 @@
       if (items.length > 0) {
         const firstItem = items[0];
         flashEl.textContent = firstItem.name;
-        wheelCenter.textContent = mode === 'raffle' ? firstItem.ticket : firstItem.score;
-        subEl.textContent = mode === 'raffle'
-          ? `🎉 ${firstItem.name} WINS! (${items.length} winner${items.length > 1 ? 's' : ''})`
-          : `🎯 ${firstItem.name} assigned ${firstItem.score}`;
+        subEl.textContent = `🎉 ${firstItem.name} WINS! (${items.length} winner${items.length > 1 ? 's' : ''})`;
+        exportButtonContainer.style.display = 'block';
       }
     }
 
-    // Celebration effects
     function celebrateWinner() {
       stage.classList.add('celebrating');
       
@@ -905,46 +1191,114 @@
       } catch (e) {}
     }
 
-    // Clear results
     function clearResults() {
-      participantsEl.value = '';
+      participantsList = [];
+      participantInput.value = '';
+      renderParticipantTags();
       resultsEl.innerHTML = '';
       flashEl.textContent = 'Ready to Draw!';
-      wheelCenter.textContent = '🎁';
       subEl.textContent = 'Click "START DRAW" to begin';
       countdownEl.textContent = '';
       lastWinners = [];
+      exportButtonContainer.style.display = 'none';
       if (spinInterval) { clearInterval(spinInterval); spinInterval = null; }
       startBtn.disabled = false;
       wheel.classList.remove('spinning');
       stage.classList.remove('celebrating');
-    }
-
-    // Export CSV
-    function exportCSV() {
-      if (lastWinners.length === 0) { showMessage('Nothing to export!'); return; }
-      const mode = modeEl.value;
-      const header = mode === 'raffle' ? 'Rank,Name,Ticket\n' : 'Rank,Name,Score\n';
-      const csv = lastWinners.map((w, i) => {
-        const value = mode === 'raffle' ? w.ticket : w.score;
-        return `${i + 1},"${w.name.replace(/"/g, '""')}",${value}`;
-      }).join('\n');
+      wheel.innerHTML = '';
+      createWheelSegments([]);
+      wheel.style.transform = 'rotate(0deg)';
       
-      const blob = new Blob([header + csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'AIC_Ushindi_Seme_Results.csv';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      showMessage('✅ CSV exported successfully!');
+      if (window.innerWidth <= 1024) {
+        displayCard.classList.remove('show-on-mobile');
+      }
     }
 
-    // Event listeners
+    function exportToExcel() {
+      if (participantsList.length === 0) { 
+        showMessage('Nothing to export!'); 
+        return; 
+      }
+      
+      const allParticipants = parseParticipants();
+      const winnerNames = new Set(lastWinners.map(w => w.name));
+      
+      const data = [];
+      data.push(['AIC USHINDI SEME PRIZE DRAW RESULTS']);
+      data.push(['Date: ' + new Date().toLocaleDateString()]);
+      data.push(['Time: ' + new Date().toLocaleTimeString()]);
+      data.push([]);
+      data.push(['Name', 'Ticket Number', 'Status', 'Winner Rank']);
+      
+      const winnerMap = new Map();
+      lastWinners.forEach((w, idx) => {
+        winnerMap.set(w.name, idx + 1);
+      });
+      
+      allParticipants.forEach(p => {
+        const isWinner = winnerNames.has(p.name);
+        const rank = isWinner ? `Winner #${winnerMap.get(p.name)}` : '';
+        const status = isWinner ? 'WINNER' : 'Participant';
+        data.push([p.name, p.ticket, status, rank]);
+      });
+      
+      data.push([]);
+      data.push(['SUMMARY']);
+      data.push(['Total Participants:', new Set(allParticipants.map(p => p.name)).size]);
+      data.push(['Total Tickets:', allParticipants.length]);
+      data.push(['Number of Winners:', lastWinners.length]);
+      
+      const worksheet = XLSX.utils.aoa_to_sheet(data);
+      
+      worksheet['!cols'] = [
+        { wch: 25 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 15 }
+      ];
+      
+      const range = XLSX.utils.decode_range(worksheet['!ref']);
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+          if (!worksheet[cellAddress]) continue;
+          
+          if (R === 0 || R === 1 || R === 2 || R === 4) {
+            worksheet[cellAddress].s = {
+              font: { bold: true },
+              alignment: { horizontal: 'center' }
+            };
+          }
+          
+          if (worksheet[cellAddress].v === 'WINNER') {
+            worksheet[cellAddress].s = {
+              font: { bold: true, color: { rgb: 'FFD700' } },
+              fill: { fgColor: { rgb: '8B0000' } }
+            };
+          }
+        }
+      }
+      
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Draw Results');
+      
+      const timestamp = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(workbook, `AIC_Ushindi_Seme_Results_${timestamp}.xlsx`);
+      
+      showMessage('✅ Excel file exported successfully!');
+    }
+
+    addParticipantBtn.addEventListener('click', addParticipant);
+    participantInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addParticipant();
+    });
     startBtn.addEventListener('click', startSpin);
     clearBtn.addEventListener('click', clearResults);
-    exportBtn.addEventListener('click', exportCSV);
+    exportBtn.addEventListener('click', exportToExcel);
+
+    window.removeParticipant = removeParticipant;
+
+    createWheelSegments([]);
   </script>
 </body>
 </html>
